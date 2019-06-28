@@ -2,7 +2,7 @@
 
 ## Background
 
-Autism spectrum disorder (ASD) is a disability that affects 1 in 59 Americans [1]. Current methods of diagnosis rely on subjective behavioral examinations that lead to false-positives and false-negatives **citation needed**. Thus, the need for a more accurate and reliable methodology is prevelant.
+Autism spectrum disorder (ASD) is a disability that affects 1 in 59 Americans [1]. Current methods of diagnosis rely on subjective behavioral examinations that lead to false-positives and false-negatives **citation needed**. Thus, the need for a more accurate and reliable methodology is prevalent.
 
 [1] https://www.cdc.gov/mmwr/volumes/67/ss/ss6706a1.htm
 
