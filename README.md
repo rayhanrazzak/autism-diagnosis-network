@@ -22,4 +22,3 @@ The second is a four-dimensional time series CNN trained using fMRIs. We impleme
 * MRI datasets were obtained from [Autism Brain Imaging Data Exchange (ABIDE).](http://fcon_1000.projects.nitrc.org/indi/abide/)
 .
 * Both neural networks are part of a submission to the 2019 Google Science Fair.
-* testing
