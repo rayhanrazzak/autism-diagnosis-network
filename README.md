@@ -2,7 +2,7 @@
 
 ## Background
 
-Autism spectrum disorder (ASD) is a disability that affects 1 in 59 Americans [1]. Current methods of diagnosis rely on subjective behavorial examinations, which lead to false-positives and false-negatives **citation needed**. Thus, the need for a more accurate and reliable methodology is prevelant. 
+Autism spectrum disorder (ASD) is a disability that affects 1 in 59 Americans [1]. Current methods of diagnosis rely on subjective behavorial examinations that lead to false-positives and false-negatives **citation needed**. Thus, the need for a more accurate and reliable methodology is prevelant. 
 
 We propose the use of machine learning algorithms trained from magnetic resonance imaging (MRI) to analyze patient's MRI scans in order to properly diagnose ASD in children aged 6-10.
 
