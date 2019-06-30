@@ -1,33 +1,35 @@
 import os
-print(os.getcwd())
+#print(os.getcwd())
 
-file_dir = 'D:/ABIDE 1/anatomical/autism positive'
+os.chdir('D:')
+#file_dir = 'D:/ABIDE 1/anatomical/autism positive'
 #print(file_dir)
-k = 0
 
-for i in os.listdir(file_dir):
-    if not i.startswith('.'):
-        #print(i)
-        new_dir = '{}/{}'.format(file_dir,i)
-        #print(new_dir)
-        #print(os.listdir(new_dir))
-        for l in os.listdir(new_dir):
-            #print(l)
-            directory = '{}/{}'.format(new_dir,l)
-            #print(directory)
-            file_path = '{}/anat/NIfTI/mprage.nii'.format(directory)
-            #print(file_path)
-            #print('{}'.format(file_path))
-            #print('D:/ABIDE 1/anatomical/nii files of autism positive/mprage{}.nii'.format(k))
-            k = k + 1
-            os.rename('{}'.format(file_path),'D:/ABIDE 1/anatomical/nii files of autism positive/mprage{}.nii'.format(k))
 
-            #for q in os.listdir(l):
-        #    print(l)
-        #if not i.startswith('.'):
-            #print(os.listdir(i))
-            #for l in os.listdir(i):
-            #    print(l)
-        #        k = 0
-                #os.move('anat/NIfTI/mprage.nii', '/ABIDE 1/anatomical/autism positive/mprage{}.nii'.format(k))
-            #    k = k + 1
+def oneFolderNewDir(file_dir,autism_true): 
+    k = 0
+    for i in os.listdir(file_dir):
+        if not i.startswith('.'):
+            #print(i)
+            new_dir = '{}/{}'.format(file_dir,i)
+            #print(new_dir)
+            #print(os.listdir(new_dir))
+            for l in os.listdir(new_dir):
+                #print(l)
+                directory = '{}/{}'.format(new_dir,l)
+                #print(directory)
+                #os.chdir("D:/ABIDE 1/anatomical/autism positive/KKI_50791/KKI_50791/anat/NIfTI")
+                #for l in os.listdir(os.curdir):
+                #    print(l)
+                file_path = '{}/anat/NIfTI/mprage.nii.gz'.format(directory)
+                #print(file_path)
+                #new_path = 'D:/ABIDE 1/anatomical/nii files of autism positive/mprage{}.nii.gz'.format(k)
+                #print(new_path)
+                k = k + 1
+                if(autism_true == 'true'):
+                    os.rename('{}'.format(file_path),'D:/ABIDE 1/anatomical/nii files of autism positive/mprage{}.nii.gz'.format(k))
+                if(autism_true == 'false'):
+                    os.rename('{}'.format(file_path), "D:/ABIDE 1/anatomical/nii files of controls/mprage{}.nii.gz".format(k))
+
+#oneFolderNewDir('D:/ABIDE 1/anatomical/autism positive', 'true')
+#oneFolderNewDir('D:/ABIDE 1/anatomical/controls', 'false')
