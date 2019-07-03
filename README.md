@@ -14,7 +14,7 @@ Since it is uncertain whether functional MRIs (fMRIs) or anatomical MRIs have a 
 
 The first is a three-dimensional CNN trained using anatomical MRIs.
 
-The second is a four-dimensional spatio-temporal CNN trained using fMRIs. We implement this novel neural network because fMRIs track brain functionality over time. Thus, the algorithm needs to study the MRI image's change with relation to time.  
+The second is a four-dimensional spatio-temporal CNN trained using fMRIs. ST-CNNs have never been used for medical diagnosis. Thus, we implement this novel neural network because fMRIs track brain functionality over time. Therefore, the algorithm needs to study the MRI image's change with relation to time.  
 
 
 ## Notes
