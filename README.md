@@ -14,11 +14,11 @@ Since it is uncertain whether functional MRIs (fMRIs) or anatomical MRIs have a 
 
 The first is a three-dimensional CNN trained using anatomical MRIs.
 
-The second is a four-dimensional spatio-temporal CNN trained using fMRIs. ST-CNNs have never been used for medical diagnosis. Thus, we implement this novel neural network because fMRIs track brain functionality over time. Therefore, the algorithm needs to study the MRI image's change with relation to time.  
+The second is a four-dimensional spatio-temporal CNN (ST-CNN) trained using fMRIs. ST-CNNs have never been used for medical diagnosis. Thus, we implement this novel neural network because fMRIs track brain functionality over time. Therefore, the algorithm needs to study the MRI image's change with relation to time.  
 
 
 ## Notes
-* Spatio-temporal convolutional neural network refers to CNNs capable of analyzing data patterns of time.
+* ST-CNN refers to CNNs capable of analyzing data patterns of time.
 * MRI datasets were obtained from [Autism Brain Imaging Data Exchange (ABIDE).](http://fcon_1000.projects.nitrc.org/indi/abide/)
 .
 * Both neural networks are part of a submission to the 2019 Google Science Fair.
