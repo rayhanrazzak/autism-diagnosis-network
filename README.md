@@ -8,7 +8,7 @@ Autism spectrum disorder (ASD) is a disability that affects 1 in 59 Americans [1
 
 ## About the Project
 
-We propose the use of machine learning algorithms to analyze patient's MRI scans in order to properly diagnose ASD in children aged 6-10.
+We propose the use of machine learning algorithms to analyze patient's magnetic resonance imaging (MRI) scans in order to properly diagnose ASD in children aged 6-10.
 
 Since it is uncertain whether functional MRIs (fMRIs) or anatomical MRIs have a stronger correlation to ASD, we present two convolutional neural networks (CNN) trained via magnetic resonance imaging **citation needed**.    
 
