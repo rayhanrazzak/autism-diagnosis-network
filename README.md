@@ -22,4 +22,4 @@ The second is a four-dimensional spatio-temporal CNN (ST-CNN) trained using fMRI
 * MRI datasets were obtained from [Autism Brain Imaging Data Exchange (ABIDE).](http://fcon_1000.projects.nitrc.org/indi/abide/)
 .
 * Part of a submission to the 2019 Google Science Fair.
-* Part of a submission [MIT THINK Scholars Program. ](https://docs.google.com/document/d/12GTQrbj2fcYvDgfmMtAV4yThOQrYORfl6feBI63tM30/edit?usp=sharing)
+* Part of a submission to [MIT THINK Scholars Program. ](https://docs.google.com/document/d/12GTQrbj2fcYvDgfmMtAV4yThOQrYORfl6feBI63tM30/edit?usp=sharing)
