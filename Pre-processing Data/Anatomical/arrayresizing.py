@@ -10,9 +10,9 @@ new_x = 50
 new_y = 50
 new_z = 50
 
-for i in os.listdir(negative_dir):
+for i in os.listdir(positive_dir):
     #print(i)
-    path = os.path.join(negative_dir, i)
+    path = os.path.join(positive_dir, i)
     #print(path)
     original_file = nib.load(path).get_data()
     shape_array = original_file.shape
