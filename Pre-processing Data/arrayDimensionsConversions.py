@@ -6,8 +6,8 @@ import numpy as np
 import os
 import nibabel as nib
 
-positive_dir = 'D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of autism positive'
-negative_dir = 'D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of controls'
+positive_dir = "D:/voxel corrected/anatomical/positive"
+negative_dir = "D:/voxel corrected/anatomical/negative"
 
 
 def MRI_dimensions(file_dir):
@@ -16,13 +16,13 @@ def MRI_dimensions(file_dir):
 
 
         directory = '{}/{}'.format(file_dir,i)
-        mriFile = nib.load(directory)
-        print(mriFile.header.get_zooms()) #prints the voxel size for each MRI in the file directory
+        #mriFile = nib.load(directory)
+        #print(mriFile.header.get_zooms()) #prints the voxel size for each MRI in the file directory
         readable_image = sitk.ReadImage(directory)
         single_array = sitk.GetArrayFromImage(readable_image)
-
+        print(directory)
         print(np.shape(single_array))
 
-MRI_dimensions(positive_dir)
+#MRI_dimensions(positive_dir)
 
 MRI_dimensions(negative_dir)

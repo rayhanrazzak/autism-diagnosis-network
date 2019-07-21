@@ -10,7 +10,7 @@ img_size = 50 #dimensions of the length and width dimensions
 
 positive_dir = "D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of autism positive"
 
-negative_dir = "D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of controls"
+negative_dir = "D:/"
 
 main_dir = "D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical"
 def training_data():
