@@ -5,7 +5,7 @@ import os
 
 negative_dir = "D:/voxel corrected/anatomical/negative"
 positive_dir = "D:/voxel corrected/anatomical/positive"
-new_dir = "D:/voxel corrected/size corrected/anatomical/negative"
+new_dir = "D:/voxel corrected/size corrected/anatomical/positive"
 new_x = 50
 new_y = 50
 new_z = 50
