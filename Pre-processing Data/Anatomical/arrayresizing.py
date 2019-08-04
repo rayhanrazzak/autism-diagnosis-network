@@ -2,7 +2,7 @@ import numpy as np
 import nibabel as nib
 import itertools
 import os
-
+'''
 negative_dir = "D:/voxel corrected/anatomical/negative"
 positive_dir = "D:/voxel corrected/anatomical/positive"
 new_dir = "D:/voxel corrected/size corrected/anatomical/positive"
@@ -33,3 +33,4 @@ for i in os.listdir(positive_dir):
 
     img = nib.Nifti1Image(new_data, np.eye(4))
     img.to_filename("{}/{}".format(new_dir,i))
+'''

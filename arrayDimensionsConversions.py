@@ -4,7 +4,7 @@
 import SimpleITK as sitk
 import numpy as np
 import os
-
+'''
 anat_dir = 'D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of autism positive'
 control_dir = 'D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of controls'
 
@@ -20,3 +20,4 @@ def MRI_dimensions(file_dir):
         print(np.shape(single_array))
 MRI_dimensions(anat_dir)
 MRI_dimensions(control_dir)
+'''

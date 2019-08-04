@@ -4,7 +4,7 @@ import nibabel as nib
 from dipy.align.reslice import reslice
 from dipy.data import get_fnames
 
-
+'''
 positive_dir = "D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of autism positive"
 negative_dir = "D:/ABIDE 1/raw MRIs (functional and anatomical)/ABIDE/anatomical/nii files of controls"
 new_dir = ""
@@ -25,3 +25,4 @@ for i in os.listdir(negative_dir):
     #print("D:/voxel corrected/anatomical/negative/{}".format(i))
 
     nib.save(img2, "D:/voxel corrected/anatomical/negative/{}".format(i))
+'''
