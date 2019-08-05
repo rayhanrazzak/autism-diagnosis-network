@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from spp_layer import spatial_pyramid_pool
 
 
-train_set= ImageFolder(root='/Users/rayhanrazzak/Desktop/PetImages', transform=ToTensor() ) #variable tensor sizes
+train_set= ImageFolder(root='/:D/PetImages/', transform=ToTensor() ) #variable tensor sizes
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
 
