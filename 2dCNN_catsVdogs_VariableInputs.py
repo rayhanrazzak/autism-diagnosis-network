@@ -57,7 +57,9 @@ class Network(nn.Module):
         output = s(fc2)
         return output
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 network = Network()
+network = network.to(device)
 train_loader  = torch.utils.data.DataLoader(train_set, shuffle=True)
 optimizer = torch.optim.Adam(network.parameters(), lr = 0.01)
 
@@ -67,8 +69,11 @@ for epoch in range(2):
     total_correct = 0
     for batch in train_loader:
         images, labels = batch
+        images = images.to(device)
+        labels = labels.to(device)
     #    images = images.view(images.shape[0], -1)
         preds = network(images)
+        preds = preds.to(device)
         loss = F.cross_entropy(preds,labels)
         optimizer.zero_grad()
         loss.backward()
