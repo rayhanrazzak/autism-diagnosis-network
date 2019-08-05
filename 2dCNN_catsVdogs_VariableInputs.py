@@ -24,24 +24,29 @@ class Network(nn.Module):
         self.output_num = [4,2,1]
         self.conv1=nn.Conv2d(in_channels=3, out_channels = 6, kernel_size = 5, bias = False) #in_channels = 3 because RGB
         self.conv2=nn.Conv2d(in_channels=6, out_channels = 12, kernel_size =5, bias = False)
-
-        self.fc1 = nn.Linear(in_features = 12*4*4, out_features = 120)
+        self.pool = nn.AdaptiveAvgPool2d(5)
+        self.fc1 = nn.Linear(in_features = 25*12, out_features = 120)
         self.fc2 = nn.Linear(in_features = 120, out_features = 60 )
         self.out=nn.Linear(in_features = 60, out_features = 2)
+
     def forward(self, t):
         t = t
-
+        #print("identity works")
         t = self.conv1(t)
         t = F.leaky_relu(t)
 
         t = self.conv2(t)
+        #print("testing if this works")
         #t = F.leaky_relu(t)
         #t = SPPLayer(num_levels=1) #TypeError: spatial_pyramid_pool() missing 1 required positional argument: 'out_pool_size'
-        spp = spatial_pyramid_pool(t,1,[int(t.size(2)),int(t.size(3))],self.output_num)
+        #spp = spatial_pyramid_pool(t,1,[int(t.size(2)),int(t.size(3))],self.output_num)
 
         #print(spp.shape)
-
-        fc1 = self.fc1(spp)
+        t = self.pool(t)
+        #print("how about now")
+        #print(t.shape)
+        t = t.view(t.shape[0],-1)
+        fc1 = self.fc1(t)
         fc1 = F.leaky_relu(fc1)
 
         fc2 = self.fc2(fc1)
@@ -57,12 +62,12 @@ train_loader  = torch.utils.data.DataLoader(train_set, shuffle=True)
 optimizer = torch.optim.Adam(network.parameters(), lr = 0.01)
 
 
-for epoch in range(1):
+for epoch in range(2):
     total_loss = 0
     total_correct = 0
     for batch in train_loader:
         images, labels = batch
-
+    #    images = images.view(images.shape[0], -1)
         preds = network(images)
         loss = F.cross_entropy(preds,labels)
         optimizer.zero_grad()
