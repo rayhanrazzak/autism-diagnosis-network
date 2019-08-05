@@ -22,8 +22,8 @@ class Network(nn.Module):
         super(Network, self).__init__()
 
         self.output_num = [4,2,1]
-        self.conv1=nn.Conv2d(in_channels=3, out_channels = 6, kernel_size = 5, bias = False) #in_channels = 3 because RGB
-        self.conv2=nn.Conv2d(in_channels=6, out_channels = 12, kernel_size =5, bias = False)
+        self.conv1=nn.Conv2d(in_channels=3, out_channels = 6, kernel_size = 4, bias = False) #in_channels = 3 because RGB
+        self.conv2=nn.Conv2d(in_channels=6, out_channels = 12, kernel_size =4, bias = False)
         self.pool = nn.AdaptiveAvgPool2d(5)
         self.fc1 = nn.Linear(in_features = 25*12, out_features = 120)
         self.fc2 = nn.Linear(in_features = 120, out_features = 60 )
