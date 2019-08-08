@@ -11,7 +11,8 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 from spp_layer import spatial_pyramid_pool
-# ------------------------------------------------------------------------------
+
+# ---------create data loader, optimizer, accuracy test, CUDA device------------
 
 train_set =
 
@@ -22,7 +23,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") #GPU dev
 optimizer = torch.optim.Adam(network.parameters(), lr = 0.01) #create optimizer
 train_loader  = torch.utils.data.DataLoader(train_set, shuffle=True) #create dataloader (train_set is the tensor)
 
-# ------------------------------------------------------------------------------
+# ----------------------------Define Model--------------------------------------
 
 class Network(nn.Module): #neural network class
     def __init__(self, input_nc = , ndf = ): #initialized variables
@@ -48,13 +49,13 @@ class Network(nn.Module): #neural network class
         #
 
 
-# ------------------------------------------------------------------------------
+# ------------------Create instance of model------------------------------------
 
 network = Network() #initialize instance of neural network
 network = network.to(device) #move neural network from CPU to GPU
 
-# ------------------------------------------------------------------------------
-for epoch in range(5): #train the neural network, computes loss and accuracy
+# -------------------train neural network---------------------------------------
+for epoch in range(5):
     total_loss = 0
     total_correct = 0
     for batch in train_loader:
