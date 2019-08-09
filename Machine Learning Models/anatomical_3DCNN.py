@@ -15,7 +15,7 @@ from spp_layer import spatial_pyramid_pool
 
 # ---------create data loader, optimizer, accuracy test, CUDA device------------
 'Urgent: Create train_set of n-dimensional MRIs for dataloader'
-train_set =
+train_set = []
 
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
