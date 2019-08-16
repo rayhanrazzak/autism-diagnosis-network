@@ -12,10 +12,16 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 from spp_layer import spatial_pyramid_pool
+from niftidataset import *
 
 # ---------create data loader, optimizer, accuracy test, CUDA device------------
 'Urgent: Create train_set of n-dimensional MRIs for dataloader'
-train_set = []
+
+# create a list like this:
+# train_set = [[[input], [label]]], each index has two lists with in (MRI values + label)
+# train_set = ToTensor(train_set)
+train_dir = ''
+train_set = NiftiDataset(train_dir, ToTensor())
 
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
