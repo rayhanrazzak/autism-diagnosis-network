@@ -13,6 +13,10 @@ import numpy as np
 import torch.nn.functional as F
 from spp_layer import spatial_pyramid_pool
 from niftidataset import *
+import nibabel as nib
+import SimpleITK as sitk
+import os
+import numpy as np
 
 # ---------create data loader, optimizer, accuracy test, CUDA device------------
 'Urgent: Create train_set of n-dimensional MRIs for dataloader'
@@ -20,9 +24,43 @@ from niftidataset import *
 # create a list like this:
 # train_set = [[[input], [label]]], each index has two lists with in (MRI values + label)
 # train_set = ToTensor(train_set)
-train_dir = ''
-train_set = NiftiDataset(train_dir, ToTensor())
+train_dir = 'd:/voxel corrected/anatomical'
+negative_dir = '{}/negative'.format(train_dir)
+positive_dir = '{}/positive'.format(train_dir)
+X_tensor = []
+positive_label = [1,0]
+positive_label = torch.FloatTensor(positive_label)
+negative_label = [0,1]
+negative_label = torch.FloatTensor(negative_label)
+y_tensor = []
+for i in os.listdir(negative_dir):
+    directory = '{}/{}'.format(negative_dir, i)
+    readable_image = sitk.ReadImage(directory)
+    single_array = sitk.GetArrayFromImage(readable_image)
+    single_array = torch.from_numpy(single_array)
+    X_tensor.append(single_array)
+    y_tensor.append(negative_label)
+for j in os.listdir(positive_dir):
+    directory = '{}/{}'.format(positive_dir, j)
+    readable_image = sitk.ReadImage(directory)
+    single_array = sitk.GetArrayFromImage(readable_image)
+    single_array = torch.from_numpy(single_array)
+    X_tensor.append(single_array)
+    y_tensor.append(positive_label)
 
+'''
+print(len(X_tensor)) # should return 220
+print(len(y_tensor)) # should return 220
+print(X_tensor[0])
+print(y_tensor[0]) # should return [0,1]'''
+
+#X_tensor = torch.FloatTensor(X_tensor)
+#y_tensor = torch.FloatTensor(y_tensor)
+
+y_tensor = torch.stack([torch.Tensor(i) for i in y_tensor]) #no problems with y_tensor because each index is the same size
+
+train_set = torch.utils.data.TensorDataset(X_tensor, y_tensor)
+'''
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
 
@@ -107,3 +145,4 @@ for epoch in range(5):
 print(total_correct/len(train_set))
 
 # ------------------------------end---------------------------------------------
+'''
