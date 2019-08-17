@@ -17,13 +17,13 @@ import nibabel as nib
 import SimpleITK as sitk
 import os
 import numpy as np
-
-# ---------create data loader, optimizer, accuracy test, CUDA device------------
-'Urgent: Create train_set of n-dimensional MRIs for dataloader'
+import pickle
+# ---------------create list for images, labels in batch -----------------------
 
 # create a list like this:
 # train_set = [[[input], [label]]], each index has two lists with in (MRI values + label)
 # train_set = ToTensor(train_set)
+'''
 train_dir = 'd:/voxel corrected/anatomical'
 negative_dir = '{}/negative'.format(train_dir)
 positive_dir = '{}/positive'.format(train_dir)
@@ -55,12 +55,18 @@ for i in range(220):
     item = [ X_tensor[i], y_tensor[i] ]
     final_list.append(item)
 
+with open("final_list.pkl", "wb") as f:
+    pickle.dump(final_list,f)
+'''
+# ------------------open list that stores images, labels------------------------
+with open("final_list.pkl", "rb") as f:
+    final_list = pickle.load(f) # MRI array data and label array data
 
+# -------------------------determine accuracy ----------------------------------
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
-
+# ------------------------------ define GPU ------------------------------------
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") #GPU device for cuda
-#train_loader  = torch.utils.data.DataLoader(train_set, shuffle=True) #create dataloader (train_set is the tensor)
 
 # ----------------------------Define Model--------------------------------------
 
@@ -80,7 +86,7 @@ class Network(nn.Module): #neural network class
     def forward(self,x): #defining forward pass
         #identity
         x = x
-        print('Original shape of x:' ,x.shape)
+        #print('Original shape of x:' ,x.shape)
 
 
         #conv layer
@@ -106,7 +112,7 @@ class Network(nn.Module): #neural network class
         spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
 
-        print("Shape of x after .view resize", spp.shape)
+        #print("Shape of x after .view resize", spp.shape)
 
         fc1 = self.fc1(spp)
         #add a relu and test again
@@ -115,10 +121,10 @@ class Network(nn.Module): #neural network class
 
         print('Shape of fc2', fc2.shape)
         print(fc2)
-        s = torch.tanh(fc2)
+        output = torch.tanh(fc2)
 
-        print('This is the output:', s)
-        return s
+        print('This is the output:', output)
+        return output
 
 # ------------------Create instance of model------------------------------------
 
@@ -141,15 +147,15 @@ for epoch in range(5): #number of epochs
         labels = labels.long() #convert dtype to long
         labels =torch.argmax(labels) #take the greatest value and store it as a scalar
         print(labels)
-        print("moving images and labels to gpu")
+        #print("moving images and labels to gpu")
         images = images.to(device)
         labels = labels.to(device)
         preds = network(images)
         preds = preds.to(device)
         print("gpu is working")
-        print('this is the shape of preds: ', preds.shape, 'this is the shape of labels: ', labels.shape)
+        #print('this is the shape of preds: ', preds.shape, 'this is the shape of labels: ', labels.shape)
         loss = F.cross_entropy(preds, labels.unsqueeze(0))
-        #print('this is the loss:', loss)
+        print('this is the loss:', loss)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
