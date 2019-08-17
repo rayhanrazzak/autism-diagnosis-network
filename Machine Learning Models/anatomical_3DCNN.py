@@ -69,9 +69,7 @@ class Network(nn.Module): #neural network class
         super(Network, self).__init__()
         self.gpu_ids = gpu_ids
         self.output_num = (4,2,2,1)
-        #self.input_nc = (variable from the function)
         self.conv1 = nn.Conv3d(input_nc, ndf, 4, 2, 2, 1, bias = False)
-
         self.conv2 = nn.Conv3d(ndf, ndf * 2, 4, 2, 1, 1, bias = False)
         self.BN1 = nn.BatchNorm3d(ndf*2)
         self.conv3 = nn.Conv3d(ndf*2, ndf*4, 4, 1, 1, 1, bias = False)
@@ -100,33 +98,27 @@ class Network(nn.Module): #neural network class
         #relu
         x = F.leaky_relu(x)
 
-        #conv layer
+
         x = self.conv3(x)
 
 
-        #x = self.pool(x)
-        #return x
+
         spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
-        #x = x.view(x.shape[0],-1)
+
         print("Shape of x after .view resize", spp.shape)
 
         fc1 = self.fc1(spp)
-
+        #add a relu and test again
+        # fc1 = F.relu(fc1)
         fc2 = self.fc2(fc1)
-        #fc2 = fc2.reshape(2)
+
         print('Shape of fc2', fc2.shape)
         print(fc2)
         s = torch.tanh(fc2)
-        #output = s(fc2)
+
         print('This is the output:', s)
         return s
-
-        #spp layer
-'''    spp = spatial_pyramid_pool(self = None, previous_conv=x,num_sample=1,previous_conv_size=[int(x.size(2)),int(x.size(3)), int(x.size(4))],out_pool_size=self.output_num)
-        print(spp.size())
-'''
-
 
 # ------------------Create instance of model------------------------------------
 
