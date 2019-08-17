@@ -4,6 +4,7 @@ from torchvision.transforms import ToTensor
 import torchvision
 import torchvision.transforms as transforms
 import random
+from random import shuffle
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -136,6 +137,9 @@ optimizer = torch.optim.Adam(network.parameters(), lr = 0.01) #create optimizer
 for epoch in range(5): #number of epochs
     total_loss = 0
     total_correct = 0
+    random.shuffle(final_list) #shuffle = true for dataset
+    print(type(final_list))
+    print('This is the label of the first final_list: ', final_list[0][1])
     for batch in final_list:
         images, labels = batch
         images = np.reshape(images,(1,1,np.size(images,0), np.size(images,1), np.size(images,2))) #reshape images array as [batch size, input_channels, x,y,z]
