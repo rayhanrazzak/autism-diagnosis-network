@@ -110,7 +110,7 @@ class Network(nn.Module): #neural network class
 
         fc1 = self.fc1(spp)
         #add a relu and test again
-        # fc1 = F.relu(fc1)
+        fc1 = F.relu(fc1)
         fc2 = self.fc2(fc1)
 
         print('Shape of fc2', fc2.shape)
