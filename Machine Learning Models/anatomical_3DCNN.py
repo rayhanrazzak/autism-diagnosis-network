@@ -19,54 +19,10 @@ import SimpleITK as sitk
 import os
 import numpy as np
 import pickle
-# ---------------create list for images, labels in batch -----------------------
 
-# create a list like this:
-# train_set = [[[input], [label]]], each index has two lists with in (MRI values + label)
-# train_set = ToTensor(train_set)
-'''
-train_dir = 'd:/voxel corrected/anatomical'
-negative_dir = '{}/negative'.format(train_dir)
-positive_dir = '{}/positive'.format(train_dir)
-X_tensor = []
-positive_label = [1,0]
-#positive_label = torch.FloatTensor(positive_label)
-negative_label = [0,1]
-#negative_label = torch.FloatTensor(negative_label)
-y_tensor = []
-
-for i in os.listdir(negative_dir):
-    directory = '{}/{}'.format(negative_dir, i)
-    readable_image = sitk.ReadImage(directory)
-    single_array = sitk.GetArrayFromImage(readable_image)
-    single_array = np.interp(single_array, (single_array.min(), single_array.max()), (0,1)) #normalize data
-    single_array = (single_array - single_array.mean())/single_array.std()
-    #single_array = torch.from_numpy(single_array)
-    X_tensor.append(single_array)
-    y_tensor.append(negative_label)
-
-for j in os.listdir(positive_dir):
-    directory = '{}/{}'.format(positive_dir, j)
-    readable_image = sitk.ReadImage(directory)
-    single_array = sitk.GetArrayFromImage(readable_image)
-    single_array = np.interp(single_array, (single_array.min(), single_array.max()), (0,1)) #normalize data
-    single_array = (single_array - single_array.mean())/single_array.std() #standardize data
-    #single_array = torch.from_numpy(single_array)
-    X_tensor.append(single_array)
-    y_tensor.append(positive_label)
-
-final_list = []
-for i in range(220):
-    item = [ X_tensor[i], y_tensor[i] ]
-    final_list.append(item)
-
-with open("final_list.pkl", "wb") as f:
-    pickle.dump(final_list,f)
-'''
 # ------------------open list that stores images, labels------------------------
 with open("final_list.pkl", "rb") as f:
     final_list = pickle.load(f) # MRI array data and label array data
-
 # -------------------------determine accuracy ----------------------------------
 def get_num_correct(preds,labels):
     return preds.argmax(dim=1).eq(labels).sum().item()
@@ -88,47 +44,46 @@ class Network(nn.Module): #neural network class
         #self.maxpool2 = nn.MaxPool3d()
         self.fc1 = nn.Linear(20736,4096)
         self.fc2 = nn.Linear(4096,num_class)
-        self.pool = nn.AdaptiveAvgPool3d(5)
+        #self.pool = nn.AdaptiveAvgPool3d(5)
     def forward(self,x): #defining forward pass
         #identity
         x = x
-        #print('Original shape of x:' ,x.shape)
 
-
-        #conv layer
+        #First conv layer
         x = self.conv1(x)
 
         #relu
         x = F.leaky_relu(x)
-        #print("size of x befor first maxpool: ", x.shape)
-        #x = maxpool1(x)
-        #conv layer
-        x = self.conv2(x)
 
+        #Second conv layer
+        x = self.conv2(x)
 
         #relu
         x = F.leaky_relu(x)
-    #    print("Size of x before second maxpool: ", x.shape)
-        #x = maxpool2(x)
+        #print("Size of x before second maxpool: ", x.shape)
 
+        #Third conv layer
         x = self.conv3(x)
 
         x = F.leaky_relu(x)
-        print("this is the max value for x right before spp:", torch.max(x))
-        spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
+        #SPP Layer
+        spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
         #print("Shape of x after .view resize", spp.shape)
         print("this is the max value for x right before fc1: ", torch.max(spp))
+
+        #First fully connected layer
         fc1 = self.fc1(spp)
-        print("max value after fc1: ", torch.max(fc1))
-        #add a relu and test again
+        #relu
         fc1 = F.relu(fc1)
-        #print("this is fc1: ", fc1)
+        print("max value after fc1: ", torch.max(fc1))
+
+        #Second fully connected layer
         fc2 = self.fc2(fc1)
-        print("max value after fc2: ", torch.max(fc2))
-        #print('Shape of fc2', fc2.shape)
-    #    print("this is fc2:", fc2)
+        print("max value after fc2: ", torch.max(fc2)) #before activation function [sigmoid]
+
+        #Sigmoid
         s = nn.Sigmoid()
         output = s(fc2)
         #output = torch.tanh(fc2)
@@ -157,15 +112,13 @@ for epoch in range(5): #number of epochs
         labels = np.asarray(labels).reshape(1,2) # convert labels list into a numpy array
         labels = torch.from_numpy(labels) #convert labels numpy array to torch tensor
         labels = labels.long() #convert dtype to long
-        #print("this is the label: ", labels)
         labels =torch.argmax(labels) #take the greatest value and store it as a scalar
-        #print("moving images and labels to gpu")
         images = images.to(device)
         labels = labels.to(device)
         preds = network(images)
         preds = preds.to(device)
         loss = F.cross_entropy(preds, labels.unsqueeze(0))
-        #print('this is the loss:', loss)
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
