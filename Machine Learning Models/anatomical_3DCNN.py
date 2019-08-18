@@ -39,6 +39,8 @@ for i in os.listdir(negative_dir):
     directory = '{}/{}'.format(negative_dir, i)
     readable_image = sitk.ReadImage(directory)
     single_array = sitk.GetArrayFromImage(readable_image)
+    single_array = np.interp(single_array, (single_array.min(), single_array.max()), (0,1)) #normalize data
+    single_array = (single_array - single_array.mean())/single_array.std()
     #single_array = torch.from_numpy(single_array)
     X_tensor.append(single_array)
     y_tensor.append(negative_label)
@@ -47,6 +49,8 @@ for j in os.listdir(positive_dir):
     directory = '{}/{}'.format(positive_dir, j)
     readable_image = sitk.ReadImage(directory)
     single_array = sitk.GetArrayFromImage(readable_image)
+    single_array = np.interp(single_array, (single_array.min(), single_array.max()), (0,1)) #normalize data
+    single_array = (single_array - single_array.mean())/single_array.std() #standardize data
     #single_array = torch.from_numpy(single_array)
     X_tensor.append(single_array)
     y_tensor.append(positive_label)
@@ -78,9 +82,10 @@ class Network(nn.Module): #neural network class
         self.output_num = (4,2,2,1)
         self.conv1 = nn.Conv3d(input_nc, ndf, 4, 2, 2, 1, bias = False)
         self.conv2 = nn.Conv3d(ndf, ndf * 2, 4, 2, 1, 1, bias = False)
-        self.BN1 = nn.BatchNorm3d(ndf*2)
-        self.conv3 = nn.Conv3d(ndf*2, ndf*4, 4, 1, 1, 1, bias = False)
 
+        self.conv3 = nn.Conv3d(ndf*2, ndf*4, 4, 1, 1, 1, bias = False)
+        #self.maxpool1 = nn.MaxPool3d()
+        #self.maxpool2 = nn.MaxPool3d()
         self.fc1 = nn.Linear(20736,4096)
         self.fc2 = nn.Linear(4096,num_class)
         self.pool = nn.AdaptiveAvgPool3d(5)
@@ -95,34 +100,38 @@ class Network(nn.Module): #neural network class
 
         #relu
         x = F.leaky_relu(x)
-
+        #print("size of x befor first maxpool: ", x.shape)
+        #x = maxpool1(x)
         #conv layer
         x = self.conv2(x)
 
-        #batch normalization layer
-        x = self.BN1(x)
 
         #relu
         x = F.leaky_relu(x)
-
+    #    print("Size of x before second maxpool: ", x.shape)
+        #x = maxpool2(x)
 
         x = self.conv3(x)
 
-
-
+        x = F.leaky_relu(x)
+        print("this is the max value for x right before spp:", torch.max(x))
         spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
 
         #print("Shape of x after .view resize", spp.shape)
-
+        print("this is the max value for x right before fc1: ", torch.max(spp))
         fc1 = self.fc1(spp)
+        print("max value after fc1: ", torch.max(fc1))
         #add a relu and test again
         fc1 = F.relu(fc1)
+        #print("this is fc1: ", fc1)
         fc2 = self.fc2(fc1)
-
-        print('Shape of fc2', fc2.shape)
-        print(fc2)
-        output = torch.tanh(fc2)
+        print("max value after fc2: ", torch.max(fc2))
+        #print('Shape of fc2', fc2.shape)
+    #    print("this is fc2:", fc2)
+        s = nn.Sigmoid()
+        output = s(fc2)
+        #output = torch.tanh(fc2)
 
         print('This is the output:', output)
         return output
@@ -138,8 +147,7 @@ for epoch in range(5): #number of epochs
     total_loss = 0
     total_correct = 0
     random.shuffle(final_list) #shuffle = true for dataset
-    print(type(final_list))
-    print('This is the label of the first final_list: ', final_list[0][1])
+
     for batch in final_list:
         images, labels = batch
         images = np.reshape(images,(1,1,np.size(images,0), np.size(images,1), np.size(images,2))) #reshape images array as [batch size, input_channels, x,y,z]
@@ -149,17 +157,15 @@ for epoch in range(5): #number of epochs
         labels = np.asarray(labels).reshape(1,2) # convert labels list into a numpy array
         labels = torch.from_numpy(labels) #convert labels numpy array to torch tensor
         labels = labels.long() #convert dtype to long
+        #print("this is the label: ", labels)
         labels =torch.argmax(labels) #take the greatest value and store it as a scalar
-        print(labels)
         #print("moving images and labels to gpu")
         images = images.to(device)
         labels = labels.to(device)
         preds = network(images)
         preds = preds.to(device)
-        print("gpu is working")
-        #print('this is the shape of preds: ', preds.shape, 'this is the shape of labels: ', labels.shape)
         loss = F.cross_entropy(preds, labels.unsqueeze(0))
-        print('this is the loss:', loss)
+        #print('this is the loss:', loss)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
