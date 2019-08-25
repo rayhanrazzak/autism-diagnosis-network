@@ -71,24 +71,24 @@ class Network(nn.Module): #neural network class
         spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
 
         #print("Shape of x after .view resize", spp.shape)
-        print("this is the max value for x right before fc1: ", torch.max(spp))
+        #print("this is the max value for x right before fc1: ", torch.max(spp))
 
         #First fully connected layer
         fc1 = self.fc1(spp)
         #relu
         fc1 = F.relu(fc1)
-        print("max value after fc1: ", torch.max(fc1))
+        #print("max value after fc1: ", torch.max(fc1))
 
         #Second fully connected layer
         fc2 = self.fc2(fc1)
-        print("max value after fc2: ", torch.max(fc2)) #before activation function [sigmoid]
+        #print("max value after fc2: ", torch.max(fc2)) #before activation function [sigmoid]
 
         #Sigmoid
         s = nn.Sigmoid()
         output = s(fc2)
         #output = torch.tanh(fc2)
 
-        print('This is the output:', output)
+        #print('This is the output:', output)
         return output
 
 # ------------------Create instance of model------------------------------------
@@ -109,15 +109,15 @@ for epoch in range(5): #number of epochs
         images = images.astype('float32') # convert images array to float32 type
         images = torch.from_numpy(images) #convert images numpy array to torch tensor
 
-        labels = np.asarray(labels).reshape(1,2) # convert labels list into a numpy array
+        labels = np.asarray(labels) # convert labels list into a numpy array
         labels = torch.from_numpy(labels) #convert labels numpy array to torch tensor
         labels = labels.long() #convert dtype to long
-        labels =torch.argmax(labels) #take the greatest value and store it as a scalar
+        #labels =torch.argmax(labels) #take the greatest value and store it as a scalar
         images = images.to(device)
         labels = labels.to(device)
         preds = network(images)
         preds = preds.to(device)
-        loss = F.cross_entropy(preds, labels.unsqueeze(0))
+        loss = F.cross_entropy(preds, labels)
 
         optimizer.zero_grad()
         loss.backward()
