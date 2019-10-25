@@ -32,64 +32,72 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") #GPU dev
 # ----------------------------Define Model--------------------------------------
 
 class Network(nn.Module): #neural network class
+
+
+
     def __init__(self, input_nc = 1, ndf = 64, gpu_ids = [], num_class = 2): #initialized variables
         super(Network, self).__init__()
         self.gpu_ids = gpu_ids
         self.output_num = (4,2,2,1)
-        self.conv1 = nn.Conv3d(input_nc, ndf, 4, 2, 2, 1, bias = False)
-        self.conv2 = nn.Conv3d(ndf, ndf * 2, 4, 2, 1, 1, bias = False)
 
-        self.conv3 = nn.Conv3d(ndf*2, ndf*4, 4, 1, 1, 1, bias = False)
-        #self.maxpool1 = nn.MaxPool3d()
-        #self.maxpool2 = nn.MaxPool3d()
-        self.fc1 = nn.Linear(20736,4096)
-        self.fc2 = nn.Linear(4096,num_class)
-        #self.pool = nn.AdaptiveAvgPool3d(5)
-    def forward(self,x): #defining forward pass
+# Use FIVE conv layers (conv, relu, maxpool)
+        self.conv_layer1 = self._make_conv_layer(3, 32)
+        self.conv_layer2 = self._make_conv_layer(32, 64)
+        self.conv_layer3 = self._make_conv_layer(64, 124)
+        self.conv_layer4 = self._make_conv_layer(124, 256)
+
+# Use FIVE max pooling layers
+
+# One 3D SPP layer
+        self.spp_layer = spatial_pyramid_pool(self = None, previous_conv = x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
+
+# Two Fully Connected Layers
+        self.fc1 = nn.Linear(4096,2048)
+        self.fc2 = nn.Linear(1024,512)
+        self.fc2 = nn.Linear(256,num_class)
+
+    def _make_conv_layer(self, in_c, out_c):
+
+        conv_layer = nn.Sequential(
+        nn.Conv3d(in_c, out_c, kernel_size=(3, 3, 3), padding=0),
+        nn.relu(),
+        nn.Conv3d(out_c, out_c, kernel_size=(3, 3, 3), padding=1),
+        nn.relu(),
+        nn.MaxPool3d((2, 2, 2)),
+        )
+
+        return conv_layer
+
+
+    def forward(self, x): #defining forward pass
+
         #identity
         x = x
 
-        #First conv layer
-        x = self.conv1(x)
+        # Convolution Layers:
+        x = self.conv_layer1(x)
 
-        #relu
-        x = F.leaky_relu(x)
+        x = self.conv_layer2(x)
 
-        #Second conv layer
-        x = self.conv2(x)
+        x = self.conv_layer3(x)
 
-        #relu
-        x = F.leaky_relu(x)
-        #print("Size of x before second maxpool: ", x.shape)
+        x = self.conv_layer4(x)
 
-        #Third conv layer
-        x = self.conv3(x)
-
-        x = F.leaky_relu(x)
+        print("This is the shape before spp: ", x.shape) #size that the input of fc1 needs to be
 
         #SPP Layer
-        spp = spatial_pyramid_pool(self = None, previous_conv =x, num_sample = 1, previous_conv_size = [int(x.size(2)), int(x.size(3)), int(x.size(4))], out_pool_size = self.output_num)
+        x = self.spp_layer()
 
-        #print("Shape of x after .view resize", spp.shape)
-        #print("this is the max value for x right before fc1: ", torch.max(spp))
+        print("This is the shape before fc1: ", x.shape) #size that the input of fc1 needs to be
 
-        #First fully connected layer
-        fc1 = self.fc1(spp)
-        #relu
-        fc1 = F.relu(fc1)
-        #print("max value after fc1: ", torch.max(fc1))
+        #Fully Connected Layers:
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
 
         #Second fully connected layer
-        fc2 = self.fc2(fc1)
-        #print("max value after fc2: ", torch.max(fc2)) #before activation function [sigmoid]
+        x = self.fc3(x)
 
-        #Sigmoid
-        s = nn.Sigmoid()
-        output = s(fc2)
-        #output = torch.tanh(fc2)
-
-        #print('This is the output:', output)
-        return output
+        return x
 
 # ------------------Create instance of model------------------------------------
 

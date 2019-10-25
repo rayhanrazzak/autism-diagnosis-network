@@ -5,9 +5,9 @@ train_dir = 'd:/voxel corrected/anatomical'
 negative_dir = '{}/negative'.format(train_dir)
 positive_dir = '{}/positive'.format(train_dir)
 X_tensor = []
-positive_label = [1,0]
+positive_label = 1
 #positive_label = torch.FloatTensor(positive_label)
-negative_label = [0,1]
+negative_label = 0
 #negative_label = torch.FloatTensor(negative_label)
 y_tensor = []
 
