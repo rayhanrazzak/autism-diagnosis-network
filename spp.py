@@ -17,7 +17,7 @@ class spp:
         self.c = [] #GCF of third dimension in self.path
     def pool(self, gcd): #MaxPools the tensor
         self.gcd = gcd
-        self.out = nn.MaxPool3d((self.a,self.b,self.c), padding=False)
+        self.out = nn.MaxPool3d((self.size[0] / self.gcd[0], self.size[1] / self.gcd[1], self.size[2] / self.gcd[2]), padding=False)
         return self.out
     def gcd(self, path): #generates the GCD of 3 dimensions for a path
         self.path = path
