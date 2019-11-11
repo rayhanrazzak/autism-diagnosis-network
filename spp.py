@@ -19,22 +19,10 @@ class spp:
         self.gcd = gcd
         self.out = nn.MaxPool3d((self.size[0] / self.gcd[0], self.size[1] / self.gcd[1], self.size[2] / self.gcd[2]), padding=False)
         return self.out
-    def gcd(self, path): #generates the GCD of 3 dimensions for a path
-        self.path = path
-        for i in os.listdir(self.path):
-            self.file = '{}/{}'.format(self.path, i)
-            self.readImage = sitk.ReadImage(self.file)
-            self.array = sitk.GetArrayFromImage(self.readImage)
-            
-            self.a.append(np.shape(self.array)[0]) #list of all files first dimension
-            self.b.append(np.shape(self.array)[1])
-            self.c.append(np.shape(self.array)[2])
-        self.a_gcd = reduce(gcd, self.a)
-        self.b_gcd = reduce(gcd, self.b)
-        self.c_gcd = reduce(gcd, self.c)
 
-        self.gcd = (self.a_gcd, self.b_gcd, self.c_gcd)
-        return self.gcd #returns a tuple
+    def resize(): #interpolate
+
+
 
 ''' How to run:
  
