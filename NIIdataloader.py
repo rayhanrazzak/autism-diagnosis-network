@@ -19,7 +19,7 @@ class NIIdataloader(self, positiveDir, negativeDir, shuffle):
 					self.label = 1
 				else:
 					self.label = 0
-				self.trainingData.append([np.array(self.array), np.array(label))
+				self.trainingData.append([np.array(self.array), np.array(self.label)])
 		if self.shuffle == True: 
 			self.trainingData = random.shuffle(self.trainingData)
 		return self.trainingData
